@@ -83,6 +83,51 @@ export type Database = {
           },
         ]
       }
+      task_submissions: {
+        Row: {
+          created_at: string
+          id: string
+          intern_id: string
+          submission_files: Json | null
+          submission_links: string[] | null
+          submission_note: string | null
+          task_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          intern_id: string
+          submission_files?: Json | null
+          submission_links?: string[] | null
+          submission_note?: string | null
+          task_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          intern_id?: string
+          submission_files?: Json | null
+          submission_links?: string[] | null
+          submission_note?: string | null
+          task_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_submissions_intern_id_fkey"
+            columns: ["intern_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_submissions_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tasks: {
         Row: {
           assigned_to: string
@@ -93,6 +138,7 @@ export type Database = {
           id: string
           leader_comments: string | null
           priority: Database["public"]["Enums"]["task_priority"]
+          review_notes: string | null
           start_date: string
           status: Database["public"]["Enums"]["task_status"]
           title: string
@@ -108,6 +154,7 @@ export type Database = {
           id?: string
           leader_comments?: string | null
           priority?: Database["public"]["Enums"]["task_priority"]
+          review_notes?: string | null
           start_date: string
           status?: Database["public"]["Enums"]["task_status"]
           title: string
@@ -123,6 +170,7 @@ export type Database = {
           id?: string
           leader_comments?: string | null
           priority?: Database["public"]["Enums"]["task_priority"]
+          review_notes?: string | null
           start_date?: string
           status?: Database["public"]["Enums"]["task_status"]
           title?: string

@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Clock, FileText, AlertCircle } from "lucide-react";
+import { CheckCircle, Clock, FileText, AlertCircle, Eye } from "lucide-react";
 
 interface TaskStatsProps {
   tasks: any[];
@@ -10,6 +10,7 @@ const TaskStats = ({ tasks }: TaskStatsProps) => {
     assigned: tasks.filter((t) => t.status === "assigned").length,
     inProgress: tasks.filter((t) => t.status === "in_progress").length,
     submitted: tasks.filter((t) => t.status === "submitted").length,
+    underReview: tasks.filter((t) => t.status === "under_review").length,
     completed: tasks.filter((t) => t.status === "completed").length,
   };
 
@@ -33,6 +34,12 @@ const TaskStats = ({ tasks }: TaskStatsProps) => {
       color: "text-status-submitted",
     },
     {
+      title: "Under Review",
+      value: stats.underReview,
+      icon: Eye,
+      color: "text-status-under-review",
+    },
+    {
       title: "Completed",
       value: stats.completed,
       icon: CheckCircle,
@@ -41,7 +48,7 @@ const TaskStats = ({ tasks }: TaskStatsProps) => {
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-4">
+    <div className="grid gap-4 md:grid-cols-5">
       {statCards.map((stat) => (
         <Card key={stat.title} className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

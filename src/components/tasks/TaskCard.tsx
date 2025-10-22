@@ -18,6 +18,8 @@ import {
 import { format } from "date-fns";
 import EditTaskDialog from "./EditTaskDialog";
 import TimeTracker from "./TimeTracker";
+import SubmitWorkDialog from "./SubmitWorkDialog";
+import ReviewSubmissionDialog from "./ReviewSubmissionDialog";
 
 interface TaskCardProps {
   task: any;
@@ -29,6 +31,8 @@ const TaskCard = ({ task, onUpdate, isLeader }: TaskCardProps) => {
   const { toast } = useToast();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [showTimeTracker, setShowTimeTracker] = useState(false);
+  const [submitDialogOpen, setSubmitDialogOpen] = useState(false);
+  const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
@@ -182,7 +186,7 @@ const TaskCard = ({ task, onUpdate, isLeader }: TaskCardProps) => {
                   </Button>
                   <Button
                     size="sm"
-                    onClick={() => handleStatusUpdate("submitted")}
+                    onClick={() => setSubmitDialogOpen(true)}
                   >
                     Submit Work
                   </Button>
@@ -190,22 +194,13 @@ const TaskCard = ({ task, onUpdate, isLeader }: TaskCardProps) => {
               )}
             </>
           )}
-          {isLeader && task.status === "submitted" && (
-            <>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => handleStatusUpdate("under_review")}
-              >
-                Under Review
-              </Button>
-              <Button
-                size="sm"
-                onClick={() => handleStatusUpdate("completed")}
-              >
-                Mark Complete
-              </Button>
-            </>
+          {isLeader && (task.status === "submitted" || task.status === "under_review") && (
+            <Button
+              size="sm"
+              onClick={() => setReviewDialogOpen(true)}
+            >
+              Review Submission
+            </Button>
           )}
         </CardFooter>
       </Card>
@@ -217,6 +212,20 @@ const TaskCard = ({ task, onUpdate, isLeader }: TaskCardProps) => {
       <EditTaskDialog
         open={editDialogOpen}
         onOpenChange={setEditDialogOpen}
+        task={task}
+        onSuccess={onUpdate}
+      />
+
+      <SubmitWorkDialog
+        open={submitDialogOpen}
+        onOpenChange={setSubmitDialogOpen}
+        task={task}
+        onSuccess={onUpdate}
+      />
+
+      <ReviewSubmissionDialog
+        open={reviewDialogOpen}
+        onOpenChange={setReviewDialogOpen}
         task={task}
         onSuccess={onUpdate}
       />

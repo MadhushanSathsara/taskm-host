@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import {
@@ -100,7 +101,7 @@ const LeaderDashboard = ({ user, profile }: LeaderDashboardProps) => {
           {/* Tasks Section */}
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold">All Tasks</h2>
+              <h2 className="text-2xl font-bold">Tasks Overview</h2>
               <Button onClick={() => setCreateDialogOpen(true)}>
                 <Plus className="w-4 h-4 mr-2" />
                 Create Task
@@ -119,16 +120,88 @@ const LeaderDashboard = ({ user, profile }: LeaderDashboardProps) => {
                 </CardContent>
               </Card>
             ) : (
-              <div className="grid gap-4">
-                {tasks.map((task) => (
-                  <TaskCard
-                    key={task.id}
-                    task={task}
-                    onUpdate={loadTasks}
-                    isLeader={true}
-                  />
-                ))}
-              </div>
+              <Tabs defaultValue="all" className="space-y-4">
+                <TabsList>
+                  <TabsTrigger value="all">All Tasks</TabsTrigger>
+                  <TabsTrigger value="submitted">
+                    Submitted ({tasks.filter(t => t.status === "submitted").length})
+                  </TabsTrigger>
+                  <TabsTrigger value="under_review">
+                    Under Review ({tasks.filter(t => t.status === "under_review").length})
+                  </TabsTrigger>
+                  <TabsTrigger value="completed">
+                    Completed ({tasks.filter(t => t.status === "completed").length})
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="all" className="space-y-4">
+                  {tasks.map((task) => (
+                    <TaskCard
+                      key={task.id}
+                      task={task}
+                      onUpdate={loadTasks}
+                      isLeader={true}
+                    />
+                  ))}
+                </TabsContent>
+
+                <TabsContent value="submitted" className="space-y-4">
+                  {tasks.filter(t => t.status === "submitted").length === 0 ? (
+                    <Card>
+                      <CardContent className="py-8 text-center">
+                        <p className="text-muted-foreground">No submitted tasks</p>
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    tasks.filter(t => t.status === "submitted").map((task) => (
+                      <TaskCard
+                        key={task.id}
+                        task={task}
+                        onUpdate={loadTasks}
+                        isLeader={true}
+                      />
+                    ))
+                  )}
+                </TabsContent>
+
+                <TabsContent value="under_review" className="space-y-4">
+                  {tasks.filter(t => t.status === "under_review").length === 0 ? (
+                    <Card>
+                      <CardContent className="py-8 text-center">
+                        <p className="text-muted-foreground">No tasks under review</p>
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    tasks.filter(t => t.status === "under_review").map((task) => (
+                      <TaskCard
+                        key={task.id}
+                        task={task}
+                        onUpdate={loadTasks}
+                        isLeader={true}
+                      />
+                    ))
+                  )}
+                </TabsContent>
+
+                <TabsContent value="completed" className="space-y-4">
+                  {tasks.filter(t => t.status === "completed").length === 0 ? (
+                    <Card>
+                      <CardContent className="py-8 text-center">
+                        <p className="text-muted-foreground">No completed tasks</p>
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    tasks.filter(t => t.status === "completed").map((task) => (
+                      <TaskCard
+                        key={task.id}
+                        task={task}
+                        onUpdate={loadTasks}
+                        isLeader={true}
+                      />
+                    ))
+                  )}
+                </TabsContent>
+              </Tabs>
             )}
           </div>
         </div>
