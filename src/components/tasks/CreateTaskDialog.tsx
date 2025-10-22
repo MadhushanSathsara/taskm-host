@@ -219,7 +219,7 @@ const CreateTaskDialog = ({ open, onOpenChange, onSuccess }: CreateTaskDialogPro
             <Label htmlFor="priority">Priority</Label>
             <Select
               value={formData.priority}
-              onValueChange={(value) => setFormData({ ...formData, priority: value })}
+              onValueChange={(value) => setFormData({ ...formData, priority: value as "low" | "medium" | "high" })}
             >
               <SelectTrigger>
                 <SelectValue />

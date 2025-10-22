@@ -152,7 +152,7 @@ const EditTaskDialog = ({ open, onOpenChange, task, onSuccess }: EditTaskDialogP
             <Label htmlFor="priority">Priority</Label>
             <Select
               value={formData.priority}
-              onValueChange={(value) => setFormData({ ...formData, priority: value })}
+              onValueChange={(value) => setFormData({ ...formData, priority: value as "low" | "medium" | "high" })}
             >
               <SelectTrigger>
                 <SelectValue />
