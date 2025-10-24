@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Briefcase } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import logo from "../assets/logo.png";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -85,14 +86,12 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center gradient-hero p-4">
+    <div className="min-h-screen bg-gradient-to-b from-[#0852a7] via-[#097099] to-[#117c6a] flex items-center justify-center">
       <div className="w-full max-w-md">
         <div className="flex items-center justify-center mb-8">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-              <Briefcase className="w-6 h-6 text-white" />
-            </div>
-            <h1 className="text-3xl font-bold text-white">AITaskHub</h1>
+            {/* <img src={logo} alt="Logo" className="w-35 h-20 rounded-lg" /> */}
+            <h1 className="text-3xl font-bold text-white">Task Manager</h1>
           </div>
         </div>
 

@@ -36,11 +36,11 @@ const TaskCard = ({ task, onUpdate, isLeader }: TaskCardProps) => {
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
-      assigned: "bg-status-assigned text-status-assigned",
-      in_progress: "bg-status-in-progress text-status-in-progress",
-      submitted: "bg-status-submitted text-status-submitted",
-      under_review: "bg-status-under-review text-status-under-review",
-      completed: "bg-status-completed text-status-completed",
+      assigned: "bg-yellow-100 text-yellow-700 font-semibold",
+      in_progress: "bg-purple-100 text-purple-700 font-semibold",
+      submitted: "bg-cyan-100 text-cyan-700 font-semibold",
+      under_review: "bg-orange-100 text-yellow-700 font-semibold",
+      completed: "bg-green-100 text-green-700 font-semibold",
     };
     return colors[status] || "bg-muted text-muted-foreground";
   };
@@ -92,7 +92,7 @@ const TaskCard = ({ task, onUpdate, isLeader }: TaskCardProps) => {
   return (
     <>
       <Card className="hover:shadow-lg transition-shadow">
-        <CardHeader>
+        <CardHeader >
           <div className="flex items-start justify-between">
             <div className="space-y-2 flex-1">
               <CardTitle className="text-xl">{task.title}</CardTitle>
@@ -122,7 +122,7 @@ const TaskCard = ({ task, onUpdate, isLeader }: TaskCardProps) => {
           </div>
         </CardHeader>
 
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-2">
           {task.description && (
             <p className="text-sm text-muted-foreground">{task.description}</p>
           )}
@@ -154,7 +154,7 @@ const TaskCard = ({ task, onUpdate, isLeader }: TaskCardProps) => {
 
           {task.leader_comments && (
             <div className="bg-muted/50 p-3 rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-2 mb-2 ">
                 <MessageSquare className="w-4 h-4 text-muted-foreground" />
                 <span className="text-sm font-medium">Leader Comments</span>
               </div>

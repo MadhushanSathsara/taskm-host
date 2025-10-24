@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { CheckSquare, LogOut, Briefcase } from "lucide-react";
 import TaskCard from "@/components/tasks/TaskCard";
 import TaskStats from "@/components/tasks/TaskStats";
+import logo  from "../../assets/logo.png";
 
 interface InternDashboardProps {
   user: User;
@@ -60,11 +61,9 @@ const InternDashboard = ({ user, profile }: InternDashboardProps) => {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center">
-                <Briefcase className="w-5 h-5 text-white" />
-              </div>
+              <img src={logo} alt="Logo" className="w-35 h-20" />
               <div>
-                <h1 className="text-2xl font-bold">AITaskHub</h1>
+                <h1 className="text-2xl font-bold">Task Manager</h1>
                 <p className="text-sm text-muted-foreground">Intern Dashboard</p>
               </div>
             </div>
@@ -125,7 +124,7 @@ const InternDashboard = ({ user, profile }: InternDashboardProps) => {
                 <TabsContent value="active" className="space-y-4">
                   {tasks.filter(t => t.status === "assigned" || t.status === "in_progress").length === 0 ? (
                     <Card>
-                      <CardContent className="py-8 text-center">
+                      <CardContent className="py-4 text-center">
                         <p className="text-muted-foreground">No active tasks</p>
                       </CardContent>
                     </Card>
@@ -144,7 +143,7 @@ const InternDashboard = ({ user, profile }: InternDashboardProps) => {
                 <TabsContent value="submitted" className="space-y-4">
                   {tasks.filter(t => t.status === "submitted").length === 0 ? (
                     <Card>
-                      <CardContent className="py-8 text-center">
+                      <CardContent className="py-4 text-center">
                         <p className="text-muted-foreground">No submitted tasks</p>
                       </CardContent>
                     </Card>
@@ -163,7 +162,7 @@ const InternDashboard = ({ user, profile }: InternDashboardProps) => {
                 <TabsContent value="under_review" className="space-y-4">
                   {tasks.filter(t => t.status === "under_review").length === 0 ? (
                     <Card>
-                      <CardContent className="py-8 text-center">
+                      <CardContent className="py-4 text-center">
                         <p className="text-muted-foreground">No tasks under review</p>
                       </CardContent>
                     </Card>
@@ -182,13 +181,13 @@ const InternDashboard = ({ user, profile }: InternDashboardProps) => {
                 <TabsContent value="completed" className="space-y-4">
                   {tasks.filter(t => t.status === "completed").length === 0 ? (
                     <Card>
-                      <CardContent className="py-8 text-center">
+                      <CardContent className="py-4 text-center">
                         <p className="text-muted-foreground">No completed tasks</p>
                       </CardContent>
                     </Card>
                   ) : (
                     tasks.filter(t => t.status === "completed").map((task) => (
-                      <TaskCard
+                      <TaskCard 
                         key={task.id}
                         task={task}
                         onUpdate={loadTasks}

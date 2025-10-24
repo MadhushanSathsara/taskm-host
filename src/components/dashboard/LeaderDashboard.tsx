@@ -18,6 +18,7 @@ import {
 import TaskCard from "@/components/tasks/TaskCard";
 import CreateTaskDialog from "@/components/tasks/CreateTaskDialog";
 import TaskStats from "@/components/tasks/TaskStats";
+import logo from "../../assets/logo.png";
 
 interface LeaderDashboardProps {
   user: User;
@@ -70,11 +71,9 @@ const LeaderDashboard = ({ user, profile }: LeaderDashboardProps) => {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center">
-                <Briefcase className="w-5 h-5 text-white" />
-              </div>
+              <img src={logo} alt="Logo" className="w-35 h-20" />
               <div>
-                <h1 className="text-2xl font-bold">AITaskHub</h1>
+                <h1 className="text-2xl font-bold">Task Manager</h1>
                 <p className="text-sm text-muted-foreground">Leader Dashboard</p>
               </div>
             </div>
