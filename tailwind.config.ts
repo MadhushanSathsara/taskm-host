@@ -14,6 +14,10 @@ export default {
     },
     extend: {
       colors: {
+        "emerald-50": "#ecfdf5",
+        "purple-50": "#f5f3ff",
+        "indigo-50": "#eef2ff",
+        
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
