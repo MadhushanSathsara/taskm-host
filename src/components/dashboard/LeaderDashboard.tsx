@@ -11,13 +11,24 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { CheckSquare, LogOut, Plus, Users, Clock } from "lucide-react";
+import {
+  CheckSquare,
+  LogOut,
+  Plus,
+  Users
+} from "lucide-react";
 import TaskCard from "@/components/tasks/TaskCard";
 import CreateTaskDialog from "@/components/tasks/CreateTaskDialog";
 import TaskStats from "@/components/tasks/TaskStats";
 import logo from "../../assets/logo.png";
 import dayjs from "dayjs";
-import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  DialogHeader,
+  DialogTitle
+} from "@/components/ui/dialog";
 
 interface LeaderDashboardProps {
   user: User;
@@ -80,7 +91,6 @@ const LeaderDashboard = ({ user, profile }: LeaderDashboardProps) => {
   const loadInterns = async () => {
     setLoadingInterns(true);
 
-    // Get all interns
     const { data: internsData, error: internsError } = await supabase
       .from("profiles")
       .select("*")
@@ -96,7 +106,6 @@ const LeaderDashboard = ({ user, profile }: LeaderDashboardProps) => {
       return;
     }
 
-    // Get all attendance for current month (or full history)
     const { data: attendanceData } = await supabase
       .from("attendances")
       .select("*")
@@ -161,13 +170,25 @@ const LeaderDashboard = ({ user, profile }: LeaderDashboardProps) => {
         {/* Tasks Overview */}
         <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle className="text-lg font-bold">Tasks Overview</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg font-bold">Tasks Overview</CardTitle>
+              <Button onClick={() => setCreateDialogOpen(true)}>
+                <Plus className="w-4 h-4 mr-2" />
+                Create Task
+              </Button>
+            </div>
           </CardHeader>
+
           <CardContent>
             {loadingTasks ? (
               <p className="text-gray-500">Loading tasks...</p>
             ) : tasks.length === 0 ? (
-              <p className="text-gray-500">No tasks yet.</p>
+              <Card>
+                <CardContent className="py-8 text-center">
+                  <CheckSquare className="w-10 h-10 mx-auto mb-4 text-gray-400" />
+                  <p className="text-gray-500">No tasks yet. Create your first task!</p>
+                </CardContent>
+              </Card>
             ) : (
               <Tabs defaultValue="all" className="space-y-4">
                 <TabsList>
@@ -182,10 +203,47 @@ const LeaderDashboard = ({ user, profile }: LeaderDashboardProps) => {
                     Completed ({tasks.filter(t => t.status === "completed").length})
                   </TabsTrigger>
                 </TabsList>
-                <TabsContent value="all">
+
+                <TabsContent value="all" className="space-y-4">
                   {tasks.map((task) => (
                     <TaskCard key={task.id} task={task} onUpdate={loadTasks} isLeader />
                   ))}
+                </TabsContent>
+
+                <TabsContent value="submitted" className="space-y-4">
+                  {tasks.filter(t => t.status === "submitted").length === 0 ? (
+                    <p className="text-gray-500 text-center py-4">No submitted tasks</p>
+                  ) : (
+                    tasks
+                      .filter(t => t.status === "submitted")
+                      .map((task) => (
+                        <TaskCard key={task.id} task={task} onUpdate={loadTasks} isLeader />
+                      ))
+                  )}
+                </TabsContent>
+
+                <TabsContent value="under_review" className="space-y-4">
+                  {tasks.filter(t => t.status === "under_review").length === 0 ? (
+                    <p className="text-gray-500 text-center py-4">No tasks under review</p>
+                  ) : (
+                    tasks
+                      .filter(t => t.status === "under_review")
+                      .map((task) => (
+                        <TaskCard key={task.id} task={task} onUpdate={loadTasks} isLeader />
+                      ))
+                  )}
+                </TabsContent>
+
+                <TabsContent value="completed" className="space-y-4">
+                  {tasks.filter(t => t.status === "completed").length === 0 ? (
+                    <p className="text-gray-500 text-center py-4">No completed tasks</p>
+                  ) : (
+                    tasks
+                      .filter(t => t.status === "completed")
+                      .map((task) => (
+                        <TaskCard key={task.id} task={task} onUpdate={loadTasks} isLeader />
+                      ))
+                  )}
                 </TabsContent>
               </Tabs>
             )}
@@ -234,7 +292,6 @@ const LeaderDashboard = ({ user, profile }: LeaderDashboardProps) => {
                           <td className="px-3 py-2 text-center">{todayRecord?.total_hours ?? "-"}</td>
                           <td className="px-3 py-2 text-center capitalize">{todayRecord?.status ?? "absent"}</td>
                           <td className="px-3 py-2 text-center">
-                            {/* Modal trigger for full history */}
                             <Dialog>
                               <DialogTrigger asChild>
                                 <Button variant="outline" size="sm">View</Button>

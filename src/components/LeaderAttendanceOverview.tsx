@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { BarChart3, Clock, CheckCircle, AlertTriangle, UserX } from "lucide-react";
+import { BarChart3, Clock, CheckCircle, UserX, LogOut } from "lucide-react";
+
+dayjs.extend(duration);
 
 export default function LeaderAttendanceOverview() {
   const [summary, setSummary] = useState<any>({});
@@ -10,19 +13,68 @@ export default function LeaderAttendanceOverview() {
 
   useEffect(() => {
     const today = dayjs().format("YYYY-MM-DD");
+
     async function load() {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("attendances")
-        .select("status")
+        .select("intern_id, check_in, check_out")
         .eq("attendance_date", today);
 
-      const grouped: any = {};
-      data?.forEach((r) => {
-        grouped[r.status] = (grouped[r.status] || 0) + 1;
+      if (error) {
+        console.error(error);
+        setLoading(false);
+        return;
+      }
+
+      const grouped: any = {
+        present: 0,
+        late: 0,
+        half_day: 0,
+        early_checkout: 0,
+        absent: 0,
+      };
+
+      // Time thresholds
+      const officeStart = dayjs(today + " 08:30");
+      const lateCutoff = dayjs(today + " 09:00");
+      const absentCutoff = dayjs(today + " 09:15");
+      const halfDayEnd = dayjs(today + " 14:00");
+      const fullDayEnd = dayjs(today + " 17:30");
+
+      data?.forEach((record) => {
+        const checkIn = record.check_in ? dayjs(record.check_in) : null;
+        const checkOut = record.check_out ? dayjs(record.check_out) : null;
+        let status = "absent";
+
+        if (checkIn) {
+          // Determine lateness / absence based on check-in time
+          if (checkIn.isAfter(absentCutoff)) {
+            status = "absent";
+          } else if (checkIn.isAfter(lateCutoff) && checkIn.isBefore(absentCutoff)) {
+            status = "late";
+          } else {
+            // Valid check-in (before 9:00)
+            if (checkOut) {
+              if (checkOut.isBefore(halfDayEnd)) {
+                status = "half_day";
+              } else if (checkOut.isBefore(fullDayEnd)) {
+                status = "early_checkout";
+              } else {
+                status = "present";
+              }
+            } else {
+              status = "half_day"; // Checked in but no checkout recorded yet
+            }
+          }
+        }
+
+        grouped[status] = (grouped[status] || 0) + 1;
       });
+
       setSummary(grouped);
       setLoading(false);
     }
+
     load();
   }, []);
 
@@ -46,6 +98,12 @@ export default function LeaderAttendanceOverview() {
       icon: <BarChart3 className="w-5 h-5 text-purple-500" />,
     },
     {
+      title: "Early Checkout",
+      count: summary.early_checkout || 0,
+      color: "text-orange-600",
+      icon: <LogOut className="w-5 h-5 text-orange-500" />,
+    },
+    {
       title: "Absent",
       count: summary.absent || 0,
       color: "text-red-600",
@@ -64,7 +122,7 @@ export default function LeaderAttendanceOverview() {
         {loading ? (
           <p className="text-muted-foreground">Loading attendance...</p>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
             {statusCards.map((item) => (
               <div
                 key={item.title}
@@ -81,3 +139,4 @@ export default function LeaderAttendanceOverview() {
     </Card>
   );
 }
+
